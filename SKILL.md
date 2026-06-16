@@ -1,7 +1,7 @@
 ---
 name: browser-reader
-version: 1.1.0
-description: 读取 Chrome 页面正文，自动适配微信公众号、X/Twitter Articles 和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取），或读取当前已打开的 tab。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「读一下这个页面」时。
+version: 1.2.0
+description: 读取 Chrome 页面正文和图片，自动适配微信公众号、X/Twitter Articles 和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取），或读取当前已打开的 tab。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「读一下这个页面」时。
 ---
 
 # browser-reader
@@ -33,7 +33,7 @@ bash ~/.claude/skills/browser-reader/scripts/read_browser.sh "https://mp.weixin.
 bash ~/.claude/skills/browser-reader/scripts/read_browser.sh
 ```
 
-输出：正文纯文本到 stdout。
+输出：正文纯文本到 stdout，图片以 `[IMAGES]` 区块列出 URL。收到图片 URL 后，用 Read 工具逐一查看图片内容。
 
 ## 自动识别逻辑
 

@@ -41,23 +41,43 @@ current_url=$(osascript -e 'tell application "Google Chrome" to return URL of ac
   exit 1
 }
 
-# 根据 URL 选择最优 JS 选择器
+# 根据 URL 选择最优 JS 选择器（文字 + 图片）
 if [[ "$current_url" == *"mp.weixin.qq.com"* ]]; then
-  js_expr="document.querySelector('#js_content') ? document.querySelector('#js_content').innerText : document.body.innerText"
+  text_expr="document.querySelector('#js_content') ? document.querySelector('#js_content').innerText : document.body.innerText"
+  # 微信图片用 data-src 懒加载，优先取 data-src
+  img_expr="Array.from(document.querySelectorAll('#js_content img')).map(function(i){return i.getAttribute('data-src')||i.src}).filter(Boolean).join(String.fromCharCode(10))"
 elif [[ "$current_url" == *"x.com"* || "$current_url" == *"twitter.com"* ]]; then
-  js_expr="document.querySelector('[data-testid=articleContent]') ? document.querySelector('[data-testid=articleContent]').innerText : document.body.innerText"
+  text_expr="document.querySelector('[data-testid=articleContent]') ? document.querySelector('[data-testid=articleContent]').innerText : document.body.innerText"
+  img_expr="Array.from(document.querySelectorAll('[data-testid=articleContent] img')).map(function(i){return i.src}).filter(Boolean).join(String.fromCharCode(10))"
 else
-  js_expr='document.body.innerText'
+  text_expr='document.body.innerText'
+  img_expr="Array.from(document.querySelectorAll('img')).map(function(i){return i.src}).filter(Boolean).join(String.fromCharCode(10))"
 fi
 
-# 执行 JS 提取正文
+# 提取正文
 osascript -e "
 tell application \"Google Chrome\"
   set activeTab to active tab of front window
-  set pageContent to execute activeTab javascript \"${js_expr}\"
+  set pageContent to execute activeTab javascript \"${text_expr}\"
   return pageContent
 end tell
 " 2>&1 || {
   echo "错误：JS 执行失败。请确认已开启「允许 Apple 事件中的 JavaScript」" >&2
   exit 1
 }
+
+# 提取图片 URL
+img_urls=$(osascript -e "
+tell application \"Google Chrome\"
+  set activeTab to active tab of front window
+  set imgList to execute activeTab javascript \"${img_expr}\"
+  return imgList
+end tell
+" 2>/dev/null || echo "")
+
+if [[ -n "$img_urls" && "$img_urls" != "missing value" ]]; then
+  echo ""
+  echo "---"
+  echo "[IMAGES]"
+  echo "$img_urls"
+fi
