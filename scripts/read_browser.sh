@@ -1,10 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+URL="${1:-}"  # 可选 URL 参数
+
 # 检查 Chrome 是否运行
 if ! pgrep -x "Google Chrome" > /dev/null; then
   echo "错误：Google Chrome 未运行" >&2
   exit 1
+fi
+
+# 如果传入了 URL，先在 Chrome 打开
+if [[ -n "$URL" ]]; then
+  osascript -e "tell application \"Google Chrome\"
+    activate
+    open location \"${URL}\"
+  end tell" 2>&1 || {
+    echo "错误：无法在 Chrome 中打开链接" >&2
+    exit 1
+  }
+
+  # 等 Chrome 建好新 tab
+  sleep 0.5
+
+  # 轮询 document.readyState，最多等 30 秒
+  for i in $(seq 1 30); do
+    state=$(osascript -e 'tell application "Google Chrome" to execute active tab of front window javascript "document.readyState"' 2>/dev/null || echo "loading")
+    if [[ "$state" == "complete" ]]; then
+      break
+    fi
+    sleep 1
+  done
+
+  # JS 渲染型页面（React/SPA）加载完 DOM 后还需要短暂等待
+  sleep 1
 fi
 
 # 获取当前 tab URL（失败时给出权限提示）
@@ -14,11 +42,9 @@ current_url=$(osascript -e 'tell application "Google Chrome" to return URL of ac
 }
 
 # 根据 URL 选择最优 JS 选择器
-# 注意：选择器字符串使用单引号，避免与 AppleScript 字符串的双引号冲突
 if [[ "$current_url" == *"mp.weixin.qq.com"* ]]; then
   js_expr="document.querySelector('#js_content') ? document.querySelector('#js_content').innerText : document.body.innerText"
 elif [[ "$current_url" == *"x.com"* || "$current_url" == *"twitter.com"* ]]; then
-  # 属性值不加引号（articleContent 是合法标识符），避免双引号嵌套问题
   js_expr="document.querySelector('[data-testid=articleContent]') ? document.querySelector('[data-testid=articleContent]').innerText : document.body.innerText"
 else
   js_expr='document.body.innerText'
