@@ -122,7 +122,8 @@ HEADER
 
   elif [[ "$FORMAT" == "--md" ]]; then
     OUT_FILE="/tmp/browser-reader-article.md"
-    pandoc -f html -t markdown-raw_html --wrap=none "$TMP_RAW" -o "$OUT_FILE"
+    CLEAN_PY="$(dirname "$0")/clean_html.py"
+    python3 "$CLEAN_PY" < "$TMP_RAW" | pandoc -f html -t gfm --wrap=none -o "$OUT_FILE"
     echo "$OUT_FILE"
   fi
 
