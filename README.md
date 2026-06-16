@@ -38,15 +38,14 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### Usage
 
-Just send a URL to your agent:
+Send a URL to your agent — it opens Chrome, waits for the page to load, and extracts the content automatically:
 
-> "Read this for me: https://mp.weixin.qq.com/s/xxx"
+> "Read this for me: https://mp.weixin.qq.com/s/xxx"  
+> "Export this article as HTML: https://mp.weixin.qq.com/s/xxx"
 
-The agent opens the URL in Chrome automatically, waits for it to load, then extracts the content — no manual browser step needed.
+Or read the page you already have open:
 
-You can also ask it to read the page you already have open:
-
-> "Read the content of this page"
+> "Read the current page"
 
 Auto-detects the page type and uses the optimal selector:
 
@@ -54,24 +53,22 @@ Auto-detects the page type and uses the optimal selector:
 |------|----------|
 | WeChat Official Account | `#js_content` |
 | X/Twitter Articles | `[data-testid=articleContent]` |
-| Everything else | `document.body.innerText` |
+| Everything else | `article` → `main` → `body` |
 
-### Output format
+### Output modes
 
-```
-[article text]
+| Mode | Command | Output |
+|------|---------|--------|
+| Default | `read_browser.sh [URL]` | Plain text + `[IMAGES]` URL list |
+| HTML export | `read_browser.sh [URL] --html` | `/tmp/browser-reader-article.html` |
+| Markdown export | `read_browser.sh [URL] --md` | `/tmp/browser-reader-article.md` |
 
----
-[IMAGES]
-https://...image1
-https://...image2
-```
-
-Image URLs are listed under `[IMAGES]`. The agent views each one using vision capabilities to understand the image content.
+In `--html` and `--md` modes, images are embedded **inline at their correct positions** in the article. Open the HTML file with `open /tmp/browser-reader-article.html` for a clean preview on macOS.
 
 ### Limitations
 
 - macOS + Chrome only
+- `--md` requires pandoc (`brew install pandoc`)
 - X Threads not supported (virtual list)
 
 ### Contributing
@@ -110,13 +107,12 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### 使用方式
 
-直接把链接发给 Agent：
+把链接发给 Agent，自动在 Chrome 打开、等待加载、提取内容，无需手动操作浏览器：
 
-> "帮我读这篇文章：https://mp.weixin.qq.com/s/xxx"
+> "帮我读这篇文章：https://mp.weixin.qq.com/s/xxx"  
+> "把这篇文章导出成 HTML：https://mp.weixin.qq.com/s/xxx"
 
-Agent 会自动在 Chrome 打开链接、等待加载、提取正文，无需手动打开浏览器。
-
-也可以让它读你已经打开的页面：
+也可以读取当前已打开的页面：
 
 > "读一下当前页面的内容"
 
@@ -126,24 +122,22 @@ Agent 会自动在 Chrome 打开链接、等待加载、提取正文，无需手
 |----------|--------|
 | 微信公众号 | `#js_content` |
 | X/Twitter 长文章 | `[data-testid=articleContent]` |
-| 其他所有页面 | `document.body.innerText` |
+| 其他所有页面 | `article` → `main` → `body` |
 
-### 输出格式
+### 输出模式
 
-```
-[文章正文]
+| 模式 | 命令 | 输出 |
+|------|------|------|
+| 默认 | `read_browser.sh [URL]` | 纯文字 + `[IMAGES]` 图片 URL 列表 |
+| HTML 导出 | `read_browser.sh [URL] --html` | `/tmp/browser-reader-article.html` |
+| Markdown 导出 | `read_browser.sh [URL] --md` | `/tmp/browser-reader-article.md` |
 
----
-[IMAGES]
-https://...图片1
-https://...图片2
-```
-
-图片 URL 列在 `[IMAGES]` 区块，Agent 会逐一用视觉能力查看图片内容。
+`--html` 和 `--md` 模式下，图片**内嵌在文章正确位置**，不是附在末尾。HTML 文件可用 `open /tmp/browser-reader-article.html` 在 macOS 直接预览。
 
 ### 局限性
 
 - 仅支持 macOS + Chrome
+- `--md` 模式需要 pandoc（`brew install pandoc`）
 - 不支持 X Thread（虚拟列表，无法完整提取）
 
 ### 贡献
@@ -182,11 +176,10 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### 使い方
 
-URLをAgentに送るだけ：
+URLをAgentに送るだけ — ChoromeでURLを自動的に開き、ロードを待って本文を取得します：
 
-> 「この記事を読んで：https://mp.weixin.qq.com/s/xxx」
-
-AgentがChromeで自動的にURLを開き、ロードを待ってから本文を取得します。手動でブラウザを操作する必要はありません。
+> 「この記事を読んで：https://mp.weixin.qq.com/s/xxx」  
+> 「この記事をHTMLで書き出して：https://mp.weixin.qq.com/s/xxx」
 
 すでに開いているページを読ませることもできます：
 
@@ -198,24 +191,22 @@ AgentがChromeで自動的にURLを開き、ロードを待ってから本文を
 |--------|-----------|
 | WeChat公式アカウント | `#js_content` |
 | X/Twitter 長文記事 | `[data-testid=articleContent]` |
-| その他すべてのページ | `document.body.innerText` |
+| その他すべてのページ | `article` → `main` → `body` |
 
-### 出力フォーマット
+### 出力モード
 
-```
-[記事本文]
+| モード | コマンド | 出力 |
+|--------|---------|------|
+| デフォルト | `read_browser.sh [URL]` | テキスト＋`[IMAGES]` URL一覧 |
+| HTMLエクスポート | `read_browser.sh [URL] --html` | `/tmp/browser-reader-article.html` |
+| Markdownエクスポート | `read_browser.sh [URL] --md` | `/tmp/browser-reader-article.md` |
 
----
-[IMAGES]
-https://...画像1
-https://...画像2
-```
-
-画像URLは`[IMAGES]`セクションに列挙されます。Agentがビジョン機能で各画像を確認します。
+`--html`・`--md`モードでは、画像が**記事内の正しい位置に埋め込まれます**。HTMLファイルは`open /tmp/browser-reader-article.html`でmacOSプレビュー可能です。
 
 ### 制限事項
 
 - macOS + Chromeのみ対応
+- `--md`モードはpandocが必要（`brew install pandoc`）
 - X Thread非対応（仮想リストのため完全な取得不可）
 
 ### コントリビューション
@@ -254,11 +245,10 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### 사용 방법
 
-Agent에게 URL을 전달하기만 하면 됩니다:
+Agent에게 URL을 전달하면 Chrome에서 자동으로 열고, 로딩을 기다린 후 본문을 추출합니다:
 
-> "이 글 읽어줘: https://mp.weixin.qq.com/s/xxx"
-
-Agent가 Chrome에서 자동으로 URL을 열고, 로딩을 기다린 후 본문을 추출합니다. 수동으로 브라우저를 열 필요가 없습니다.
+> "이 글 읽어줘: https://mp.weixin.qq.com/s/xxx"  
+> "이 글 HTML로 내보내줘: https://mp.weixin.qq.com/s/xxx"
 
 이미 열려 있는 페이지를 읽게 할 수도 있습니다:
 
@@ -270,24 +260,22 @@ Agent가 Chrome에서 자동으로 URL을 열고, 로딩을 기다린 후 본문
 |--------|--------|
 | WeChat 공식 계정 | `#js_content` |
 | X/Twitter 긴 글 | `[data-testid=articleContent]` |
-| 그 외 모든 페이지 | `document.body.innerText` |
+| 그 외 모든 페이지 | `article` → `main` → `body` |
 
-### 출력 형식
+### 출력 모드
 
-```
-[기사 본문]
+| 모드 | 명령어 | 출력 |
+|------|--------|------|
+| 기본 | `read_browser.sh [URL]` | 텍스트 + `[IMAGES]` URL 목록 |
+| HTML 내보내기 | `read_browser.sh [URL] --html` | `/tmp/browser-reader-article.html` |
+| Markdown 내보내기 | `read_browser.sh [URL] --md` | `/tmp/browser-reader-article.md` |
 
----
-[IMAGES]
-https://...이미지1
-https://...이미지2
-```
-
-이미지 URL은 `[IMAGES]` 섹션에 나열됩니다. Agent가 비전 기능으로 각 이미지를 확인합니다.
+`--html`·`--md` 모드에서는 이미지가 **기사 내 올바른 위치에 인라인으로 삽입됩니다**. HTML 파일은 `open /tmp/browser-reader-article.html`로 macOS에서 바로 미리볼 수 있습니다.
 
 ### 제한 사항
 
 - macOS + Chrome 전용
+- `--md` 모드는 pandoc 필요 (`brew install pandoc`)
 - X Thread 미지원 (가상 목록으로 완전한 추출 불가)
 
 ### 기여
