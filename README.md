@@ -2,6 +2,8 @@
 
 **[English](#english) · [中文](#中文) · [日本語](#日本語) · [한국어](#한국어)**
 
+[![skills.sh](https://skills.sh/b/chemark/browser-reader)](https://skills.sh/chemark/browser-reader)
+
 </div>
 
 ---
@@ -18,6 +20,11 @@ Enable JavaScript in Apple Events in Chrome (one-time setup):
 **View → Developer → Allow JavaScript from Apple Events**
 
 ### Installation
+
+**skills CLI** (recommended)
+```bash
+npx skills add chemark/browser-reader
+```
 
 **Claude Code**
 ```bash
@@ -69,6 +76,11 @@ PRs welcome for Windows PowerShell support, Firefox / Arc browser support, and a
 
 ### 安装
 
+**skills CLI**（推荐）
+```bash
+npx skills add chemark/browser-reader
+```
+
 **Claude Code**
 ```bash
 claude install https://github.com/chemark/browser-reader
@@ -119,6 +131,11 @@ ChromeでApple EventsのJavaScriptを許可（初回のみ）：
 
 ### インストール
 
+**skills CLI**（推奨）
+```bash
+npx skills add chemark/browser-reader
+```
+
 **Claude Code**
 ```bash
 claude install https://github.com/chemark/browser-reader
@@ -168,6 +185,11 @@ Chrome에서 Apple Events의 JavaScript 허용 (최초 1회만):
 **메뉴 표시줄 → 보기 → 개발자 → Apple Events로 JavaScript 허용**
 
 ### 설치
+
+**skills CLI** (권장)
+```bash
+npx skills add chemark/browser-reader
+```
 
 **Claude Code**
 ```bash
