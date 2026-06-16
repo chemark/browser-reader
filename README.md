@@ -38,9 +38,14 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### Usage
 
-Tell your agent to read the current browser page:
+Just send a URL to your agent:
 
-> "Help me read this article"  
+> "Read this for me: https://mp.weixin.qq.com/s/xxx"
+
+The agent opens the URL in Chrome automatically, waits for it to load, then extracts the content — no manual browser step needed.
+
+You can also ask it to read the page you already have open:
+
 > "Read the content of this page"
 
 Auto-detects the page type and uses the optimal selector:
@@ -93,9 +98,14 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### 使用方式
 
-直接告诉你的 Agent：
+直接把链接发给 Agent：
 
-> "帮我读一下这篇文章"  
+> "帮我读这篇文章：https://mp.weixin.qq.com/s/xxx"
+
+Agent 会自动在 Chrome 打开链接、等待加载、提取正文，无需手动打开浏览器。
+
+也可以让它读你已经打开的页面：
+
 > "读一下当前页面的内容"
 
 自动识别页面类型，选择最优选择器：
@@ -148,9 +158,14 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### 使い方
 
-Agentに伝えるだけ：
+URLをAgentに送るだけ：
 
-> 「この記事を読んで」  
+> 「この記事を読んで：https://mp.weixin.qq.com/s/xxx」
+
+AgentがChromeで自動的にURLを開き、ロードを待ってから本文を取得します。手動でブラウザを操作する必要はありません。
+
+すでに開いているページを読ませることもできます：
+
 > 「今開いているページの内容を読み取って」
 
 ページの種類を自動検出し、最適なセレクターを使用します：
@@ -203,9 +218,14 @@ git clone https://github.com/chemark/browser-reader ~/.claude/skills/browser-rea
 
 ### 사용 방법
 
-Agent에게 말하기만 하면 됩니다:
+Agent에게 URL을 전달하기만 하면 됩니다:
 
-> "이 글 읽어줘"  
+> "이 글 읽어줘: https://mp.weixin.qq.com/s/xxx"
+
+Agent가 Chrome에서 자동으로 URL을 열고, 로딩을 기다린 후 본문을 추출합니다. 수동으로 브라우저를 열 필요가 없습니다.
+
+이미 열려 있는 페이지를 읽게 할 수도 있습니다:
+
 > "지금 열린 페이지 내용 읽어줘"
 
 페이지 유형을 자동으로 감지하고 최적의 선택자를 사용합니다:
