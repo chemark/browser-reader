@@ -1,5 +1,6 @@
 ---
 name: browser-reader
+version: 1.0.0
 description: 读取 Chrome 当前打开页面的正文内容，自动适配微信公众号、X/Twitter Articles 和通用网页。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户说「帮我读这篇文章」「读一下这个页面」，或提供 URL 并要求提取内容时。
 ---
 
