@@ -56,10 +56,22 @@ Auto-detects the page type and uses the optimal selector:
 | X/Twitter Articles | `[data-testid=articleContent]` |
 | Everything else | `document.body.innerText` |
 
+### Output format
+
+```
+[article text]
+
+---
+[IMAGES]
+https://...image1
+https://...image2
+```
+
+Image URLs are listed under `[IMAGES]`. The agent views each one using vision capabilities to understand the image content.
+
 ### Limitations
 
-- macOS + Chrome only (v1)
-- **Images are not extracted** — text only (image support coming in v2)
+- macOS + Chrome only
 - X Threads not supported (virtual list)
 
 ### Contributing
@@ -116,10 +128,22 @@ Agent 会自动在 Chrome 打开链接、等待加载、提取正文，无需手
 | X/Twitter 长文章 | `[data-testid=articleContent]` |
 | 其他所有页面 | `document.body.innerText` |
 
+### 输出格式
+
+```
+[文章正文]
+
+---
+[IMAGES]
+https://...图片1
+https://...图片2
+```
+
+图片 URL 列在 `[IMAGES]` 区块，Agent 会逐一用视觉能力查看图片内容。
+
 ### 局限性
 
-- 仅支持 macOS + Chrome（v1）
-- **暂不支持图片提取**，仅提取文字（图片支持将在 v2 中加入）
+- 仅支持 macOS + Chrome
 - 不支持 X Thread（虚拟列表，无法完整提取）
 
 ### 贡献
@@ -176,10 +200,22 @@ AgentがChromeで自動的にURLを開き、ロードを待ってから本文を
 | X/Twitter 長文記事 | `[data-testid=articleContent]` |
 | その他すべてのページ | `document.body.innerText` |
 
+### 出力フォーマット
+
+```
+[記事本文]
+
+---
+[IMAGES]
+https://...画像1
+https://...画像2
+```
+
+画像URLは`[IMAGES]`セクションに列挙されます。Agentがビジョン機能で各画像を確認します。
+
 ### 制限事項
 
-- macOS + Chromeのみ対応（v1）
-- **画像の取得は未対応** — テキストのみ（画像対応はv2で追加予定）
+- macOS + Chromeのみ対応
 - X Thread非対応（仮想リストのため完全な取得不可）
 
 ### コントリビューション
@@ -236,10 +272,22 @@ Agent가 Chrome에서 자동으로 URL을 열고, 로딩을 기다린 후 본문
 | X/Twitter 긴 글 | `[data-testid=articleContent]` |
 | 그 외 모든 페이지 | `document.body.innerText` |
 
+### 출력 형식
+
+```
+[기사 본문]
+
+---
+[IMAGES]
+https://...이미지1
+https://...이미지2
+```
+
+이미지 URL은 `[IMAGES]` 섹션에 나열됩니다. Agent가 비전 기능으로 각 이미지를 확인합니다.
+
 ### 제한 사항
 
-- macOS + Chrome 전용 (v1)
-- **이미지 추출 미지원** — 텍스트만 추출 (이미지 지원은 v2에서 추가 예정)
+- macOS + Chrome 전용
 - X Thread 미지원 (가상 목록으로 완전한 추출 불가)
 
 ### 기여
