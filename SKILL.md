@@ -1,7 +1,7 @@
 ---
 name: browser-reader
-version: 1.2.0
-description: 读取 Chrome 页面正文和图片，自动适配微信公众号、X/Twitter Articles 和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取），或读取当前已打开的 tab。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「读一下这个页面」时。
+version: 1.3.0
+description: 读取 Chrome 页面正文和图片，自动适配微信公众号、X/Twitter Articles 和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取）。支持输出为 HTML 文档（--html）或 Markdown 文档（--md），图片内嵌在正文正确位置。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「导出这篇文章」时。
 ---
 
 # browser-reader
@@ -23,17 +23,24 @@ Chrome 必须开启「允许 Apple 事件中的 JavaScript」：
 
 ## 使用方法
 
-**传入 URL（推荐）：** agent 自动在 Chrome 打开链接，等待加载后提取正文
+参数可任意组合，顺序不限：
+
 ```bash
-bash ~/.claude/skills/browser-reader/scripts/read_browser.sh "https://mp.weixin.qq.com/s/xxx"
+# 默认模式：输出纯文字 + 图片 URL 列表
+bash ~/.claude/skills/browser-reader/scripts/read_browser.sh [URL]
+
+# 导出干净 HTML 文档（图片内嵌在正文位置，macOS 可直接预览）
+bash ~/.claude/skills/browser-reader/scripts/read_browser.sh [URL] --html
+
+# 导出 Markdown 文档（需要 pandoc）
+bash ~/.claude/skills/browser-reader/scripts/read_browser.sh [URL] --md
 ```
 
-**读取当前 tab：** 用户已在 Chrome 打开页面时使用
-```bash
-bash ~/.claude/skills/browser-reader/scripts/read_browser.sh
-```
+- URL 可省略，省略时读取 Chrome 当前已打开的 tab
+- `--html` / `--md` 输出文件路径到 stdout（`/tmp/browser-reader-article.html` 或 `.md`）
+- 默认模式输出纯文字正文，图片 URL 列在 `[IMAGES]` 区块，收到后用 Read 工具逐一查看
 
-输出：正文纯文本到 stdout，图片以 `[IMAGES]` 区块列出 URL。收到图片 URL 后，用 Read 工具逐一查看图片内容。
+导出 HTML 后可用 `open /tmp/browser-reader-article.html` 在 macOS 预览。
 
 ## 自动识别逻辑
 
