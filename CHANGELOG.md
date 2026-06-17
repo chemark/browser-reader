@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.5 (2026-06-18)
+
+### Fixed
+- Move X Thread filter modes out of limitations into usage — they are features, not limitations.
+
 ## v1.4.4 (2026-06-18)
 
 ### Fixed
