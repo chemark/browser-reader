@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.2 (2026-06-18)
+
+### Fixed
+- Clarify X Thread limitation: default collects thread author only; `--all` reads everyone's replies.
+
 ## v1.4.1 (2026-06-18)
 
 ### Added

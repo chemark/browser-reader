@@ -1,6 +1,6 @@
 ---
 name: browser-reader
-version: 1.4.1
+version: 1.4.2
 description: 读取 Chrome 页面正文和图片，自动适配微信公众号、X/Twitter 推文串和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取）。支持输出为 HTML 文档（--html）或 Markdown 文档（--md），图片内嵌在正文正确位置。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「导出这篇文章」时。
 ---
 
@@ -70,5 +70,5 @@ bash ~/.claude/skills/browser-reader/scripts/read_browser.sh --all
 
 - **仅 macOS + Chrome**
 - **不提取图片**，仅文字
-- **X Thread 普通对话串**（多人对话）只收集发起者原帖，不包含他人回复
+- **X Thread 默认只收集发起者原帖**；加 `--all` 可读取所有人回复
 - 懒加载页面如内容未完全渲染，可先手动滚动到底再读取
