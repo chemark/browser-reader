@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.6 (2026-06-18)
+
+### Fixed
+- Add pandoc requirement to prerequisites in SKILL.md.
+
 ## v1.4.5 (2026-06-18)
 
 ### Fixed
