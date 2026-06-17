@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.3 (2026-06-18)
+
+### Fixed
+- Add `--user @handle` to limitations note; remove outdated "manually scroll" note (thread mode auto-scrolls).
+
 ## v1.4.2 (2026-06-18)
 
 ### Fixed
