@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.4 (2026-06-18)
+
+### Fixed
+- Remove incorrect "no image extraction" limitation — images are extracted in all modes.
+
 ## v1.4.3 (2026-06-18)
 
 ### Fixed
