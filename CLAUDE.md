@@ -27,13 +27,14 @@ bash scripts/read_browser.sh --md
 - **`scripts/read_browser.sh`**：入口。AppleScript + JavaScript 注入读取 Chrome，按 URL 选选择器，处理等待/重定向，输出文字或调度 `clean_html.py | pandoc`。
 - **`scripts/clean_html.py`**：HTML 清洗器（标准库 `html.parser`，无依赖）。将 div/span/section 透明化，只保留语义标签，丢弃整棵 script/style/nav 子树，消除 pandoc 产生的 `:::` 容器产物。
 
-### 页面适配（`read_browser.sh:54-68`）
+### 页面适配（`read_browser.sh:65-88`）
 
-| 条件 | 文字选择器 | HTML 提取 |
-|------|-----------|-----------|
-| `mp.weixin.qq.com` | `#js_content.innerText` | 克隆 `#js_content`，将 `data-src` 修正为 `src` |
-| `x.com` / `twitter.com` | `[data-testid=articleContent].innerText` | 克隆 `[data-testid=articleContent]` |
-| 其他 | `document.body.innerText` | 优先 `article` → `main` → `[role=main]` → `body`，移除 nav/header/footer |
+| 条件 | 模式 | 说明 |
+|------|------|------|
+| `mp.weixin.qq.com` | 单次读取 | 文字取 `#js_content.innerText`，HTML 克隆 `#js_content` 并修正 `data-src→src` |
+| `x.com`/`twitter.com` + `/status/` + 非导出模式 | **X Thread 滚动收集** | 注入异步 JS 收集器，从顶到底滚动，按 `--user`/`--all` 过滤，结果存 `window.__threadData` |
+| `x.com`/`twitter.com`（其他） | 单次读取 | 文字取 `[data-testid=articleContent].innerText`，HTML 克隆同选择器 |
+| 其他 | 单次读取 | 文字取 `document.body.innerText`，HTML 优先 `article` → `main` → `[role=main]` → `body`，移除 nav/header/footer |
 
 ### `clean_html.py` 三类标签处理
 
