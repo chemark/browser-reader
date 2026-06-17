@@ -1,6 +1,6 @@
 ---
 name: browser-reader
-version: 1.4.0
+version: 1.4.1
 description: 读取 Chrome 页面正文和图片，自动适配微信公众号、X/Twitter 推文串和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取）。支持输出为 HTML 文档（--html）或 Markdown 文档（--md），图片内嵌在正文正确位置。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「导出这篇文章」时。
 ---
 
@@ -51,7 +51,20 @@ bash ~/.claude/skills/browser-reader/scripts/read_browser.sh [URL] --md
 | `x.com` / `twitter.com`（其他） | 单次读取 | `[data-testid=articleContent]` 或 body |
 | 其他所有页面 | 单次读取 | `article` → `main` → `body` 降级 |
 
-X 推文串模式会自动触发，无需额外参数。脚本注入 JS 收集器后轮询，完成后输出 `[1/N]`…`[N/N]` 格式的编号推文列表。
+X 推文串模式自动触发（无需额外参数），默认只读原作者。可加参数切换：
+
+```bash
+# 默认：只读原作者
+bash ~/.claude/skills/browser-reader/scripts/read_browser.sh
+
+# 只读指定用户（@ 可省略）
+bash ~/.claude/skills/browser-reader/scripts/read_browser.sh --user @somehandle
+
+# 读取所有人的推文（输出时显示每条的作者）
+bash ~/.claude/skills/browser-reader/scripts/read_browser.sh --all
+```
+
+输出格式：`[1/N]`…`[N/N]`，`--all` 模式每条前显示 `@作者`。
 
 ## 局限性
 

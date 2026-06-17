@@ -1,9 +1,10 @@
 # Changelog
 
-## v1.4.0 (2026-06-18)
+## v1.4.1 (2026-06-18)
 
 ### Added
-- X/Twitter thread support: auto-detects `/status/` URLs and injects an async JS collector that scrolls from top to bottom, accumulating only the thread author's tweets. Output is numbered `[1/N]`…`[N/N]`. Polls up to 90 seconds with progress updates every 10 seconds.
+- X/Twitter thread support: auto-detects `/status/` URLs and injects an async JS collector that scrolls from top to bottom. Output is numbered `[1/N]`…`[N/N]`. Polls up to 90 seconds with progress updates every 10 seconds.
+- Thread filter flags: default reads thread author only; `--user @handle` reads a specific user; `--all` reads everyone and prefixes each tweet with `@author`.
 
 ## v1.3.1 (2026-06-16)
 

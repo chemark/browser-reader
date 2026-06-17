@@ -4,10 +4,21 @@ set -euo pipefail
 # 解析参数：支持任意顺序的 URL 和格式标志
 URL=""
 FORMAT=""
+THREAD_USER=""       # 推文串过滤：空=原作者，"*"=所有人，"@handle"=指定用户
+NEXT_IS_USER=false
 for arg in "$@"; do
   case "$arg" in
     --md|--html) FORMAT="$arg" ;;
-    *) URL="$arg" ;;
+    --all) THREAD_USER="*" ;;
+    --user) NEXT_IS_USER=true ;;
+    *)
+      if [[ "$NEXT_IS_USER" == "true" ]]; then
+        THREAD_USER="$arg"
+        NEXT_IS_USER=false
+      else
+        URL="$arg"
+      fi
+      ;;
   esac
 done
 
@@ -75,10 +86,22 @@ fi
 # ── X 推文串模式：滚动读取作者所有原帖 ────────────────────────────────────────
 
 if [[ "$IS_X_THREAD" == "true" ]]; then
-  echo "正在滚动读取推文串，请稍候..." >&2
+  # 确定过滤模式和对应的 JS 条件表达式
+  if [[ "$THREAD_USER" == "*" ]]; then
+    AUTHOR_FILTER_JS="true"
+    MODE_DESC="所有人"
+  elif [[ -n "$THREAD_USER" ]]; then
+    HANDLE="${THREAD_USER#@}"
+    AUTHOR_FILTER_JS="h === location.origin + '/${HANDLE}'"
+    MODE_DESC="@${HANDLE}"
+  else
+    AUTHOR_FILTER_JS="h === ah"
+    MODE_DESC="原作者"
+  fi
+  echo "正在滚动读取推文串（${MODE_DESC}），请稍候..." >&2
 
-  # 异步收集器：从顶部滚动到底，只收集第一条推文作者的内容
-  COLLECTOR_JS=$(cat << 'JSEOF'
+  # 异步收集器：从顶部滚动到底，按 AUTHOR_FILTER_JS 过滤，每条推文记录 {text, author}
+  COLLECTOR_JS=$(cat << JSEOF
 (async function(){
   window.__threadData = { done: false, tweets: [], authorHandle: null };
   try {
@@ -95,11 +118,13 @@ if [[ "$IS_X_THREAD" == "true" ]]; then
         var a = t.querySelector("[data-testid=User-Name] a");
         if (!a) return;
         var h = location.origin + a.getAttribute("href");
-        if (h !== ah) return;
+        if (!(${AUTHOR_FILTER_JS})) return;
         var el = t.querySelector("[data-testid=tweetText]");
         if (!el) return;
         var tx = el.innerText.trim();
-        if (tx && !seen.has(tx)) { seen.add(tx); window.__threadData.tweets.push(tx); }
+        var au = a.getAttribute("href").slice(1);
+        var key = au + ":" + tx;
+        if (tx && !seen.has(key)) { seen.add(key); window.__threadData.tweets.push({ text: tx, author: au }); }
       });
     }
     window.scrollTo(0, 0);
@@ -146,11 +171,14 @@ JSEOF
     echo "警告：读取超时，输出已收集内容" >&2
   fi
 
-  # 提取 JSON 结果
+  # 提取 JSON 结果，通过环境变量传递模式给 Python
   result=$(osascript -e 'tell application "Google Chrome" to execute active tab of front window javascript "window.__threadData ? JSON.stringify(window.__threadData.tweets) : \"[]\""' 2>/dev/null || echo "[]")
 
+  export THREAD_MODE="$THREAD_USER"
   printf '%s\n' "$result" | python3 -c '
-import sys, json
+import sys, json, os
+mode = os.environ.get("THREAD_MODE", "")
+show_author = (mode == "*")
 raw = sys.stdin.read().strip()
 try:
     tweets = json.loads(raw)
@@ -160,8 +188,13 @@ if not tweets:
     print("未读取到推文，请确认页面已加载完成", file=sys.stderr)
     sys.exit(1)
 for i, t in enumerate(tweets, 1):
-    print(f"[{i}/{len(tweets)}]")
-    print(t)
+    text = t.get("text", "") if isinstance(t, dict) else t
+    author = t.get("author", "") if isinstance(t, dict) else ""
+    header = f"[{i}/{len(tweets)}]"
+    if show_author and author:
+        header += f" @{author}"
+    print(header)
+    print(text)
     if i < len(tweets):
         print()
 ' || {
