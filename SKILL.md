@@ -1,7 +1,7 @@
 ---
 name: browser-reader
-version: 1.3.0
-description: 读取 Chrome 页面正文和图片，自动适配微信公众号、X/Twitter Articles 和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取）。支持输出为 HTML 文档（--html）或 Markdown 文档（--md），图片内嵌在正文正确位置。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「导出这篇文章」时。
+version: 1.4.0
+description: 读取 Chrome 页面正文和图片，自动适配微信公众号、X/Twitter 推文串和通用网页。支持直接传入 URL（自动在 Chrome 打开后读取）。支持输出为 HTML 文档（--html）或 Markdown 文档（--md），图片内嵌在正文正确位置。适用于 defuddle/curl 无法访问的需要登录态的页面。触发：用户提供 URL 要求读取内容，或说「帮我读这篇文章」「导出这篇文章」时。
 ---
 
 # browser-reader
@@ -44,15 +44,18 @@ bash ~/.claude/skills/browser-reader/scripts/read_browser.sh [URL] --md
 
 ## 自动识别逻辑
 
-| URL 匹配 | 选择器 | 说明 |
-|----------|--------|------|
-| `mp.weixin.qq.com` | `#js_content` | 微信公众号正文容器 |
-| `x.com` / `twitter.com` | `[data-testid=articleContent]` | X Articles 正文容器 |
-| 其他所有页面 | `document.body.innerText` | 通用回退 |
+| URL 匹配 | 模式 | 说明 |
+|----------|------|------|
+| `mp.weixin.qq.com` | 单次读取 | `#js_content` 容器 |
+| `x.com` / `twitter.com` + `/status/` | **滚动收集** | 自动从顶到底，只收集原作者推文 |
+| `x.com` / `twitter.com`（其他） | 单次读取 | `[data-testid=articleContent]` 或 body |
+| 其他所有页面 | 单次读取 | `article` → `main` → `body` 降级 |
+
+X 推文串模式会自动触发，无需额外参数。脚本注入 JS 收集器后轮询，完成后输出 `[1/N]`…`[N/N]` 格式的编号推文列表。
 
 ## 局限性
 
-- **仅 macOS + Chrome**（v1）
+- **仅 macOS + Chrome**
 - **不提取图片**，仅文字
-- **X Thread 不适用**（虚拟列表，无法用单一选择器获取完整内容）
+- **X Thread 普通对话串**（多人对话）只收集发起者原帖，不包含他人回复
 - 懒加载页面如内容未完全渲染，可先手动滚动到底再读取
